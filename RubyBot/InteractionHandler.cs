@@ -29,8 +29,6 @@ public class InteractionHandler : DiscordClientService
 		await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _scopeFactory.CreateScope().ServiceProvider);
 		await Client.WaitForReadyAsync(stoppingToken);
 		
-		if (_environment.IsDevelopment())
-			await _interactionService.RegisterCommandsToGuildAsync(_configuration.GetValue<ulong>("dev_guild"));
 		await _interactionService.RegisterCommandsGloballyAsync();
 
 	}
