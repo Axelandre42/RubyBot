@@ -34,7 +34,7 @@ public class PersonaModule : InteractionModuleBase<SocketInteractionContext>
 	}
 
 	[SlashCommand("get", "Afficher un personnage.")]
-	public async Task Get(string alias)
+	public async Task Get([Summary(description: "Alias du personnage.")] string alias)
 	{
 		var player = await _dbContext.Players.FindAsync(Context.User.Id);
 		if (player != null)
@@ -51,7 +51,13 @@ public class PersonaModule : InteractionModuleBase<SocketInteractionContext>
 	}
 	
 	[SlashCommand("set", "Créer ou modifier un personnage.")]
-	public async Task Set(string alias, string name, byte precision, byte strength, byte agility, byte parade, byte resistance)
+	public async Task Set([Summary(description: "Alias du personnage.")] string alias,
+		[Summary(description: "Nom du personnage.")] string name,
+		[Summary(description: "Statistique de précision.")] byte precision,
+		[Summary(description: "Statistique de force.")] byte strength,
+		[Summary(description: "Statistique d'agilité.")] byte agility,
+		[Summary(description: "Statistique de parade.")] byte parade,
+		[Summary(description: "Statistique de résistance.")] byte resistance)
 	{
 		if (precision + strength + agility + parade + resistance != 15)
 		{
@@ -142,7 +148,7 @@ public class PersonaModule : InteractionModuleBase<SocketInteractionContext>
 	}
 
 	[SlashCommand("delete", "Supprimer un personnage.")]
-	public async Task Delete(string alias)
+	public async Task Delete([Summary(description: "Alias du personnage.")] string alias)
 	{
 		var player = await _dbContext.Players.FindAsync(Context.User.Id);
 		if (player != null)
@@ -171,7 +177,9 @@ public class PersonaModule : InteractionModuleBase<SocketInteractionContext>
 	[EnabledInDm(false)]
 	[DefaultMemberPermissions(GuildPermission.ManageMessages)]
 	[SlashCommand("locked", "Verrouiller un personnage.")]
-	public async Task Locked(IUser player, string alias, bool locked)
+	public async Task Locked([Summary(description: "Joueur concerné.")] IUser player,
+		[Summary(description: "Alias du personnage.")] string alias,
+		[Summary(description: "Appliquer un verrouillage.")] bool locked)
 	{
 		if (player.Id == Context.User.Id)
 		{
