@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Microsoft.EntityFrameworkCore;
 using RubyBot.Model;
@@ -67,7 +66,7 @@ public class RollModule : InteractionModuleBase<SocketInteractionContext>
 		var player = await _dbContext.Players.FindAsync(Context.User.Id);
 		if (player != null)
 		{
-			Persona personaObj;
+			Persona? personaObj;
 			if (alias == null)
 			{
 				if (player.LastUsed == null)
@@ -88,7 +87,7 @@ public class RollModule : InteractionModuleBase<SocketInteractionContext>
 			{
 				var roll = Random(player, 1, 20);
 				var canBeCritical = false;
-				var name = "";
+				string name;
 
 				switch (type)
 				{
@@ -219,7 +218,7 @@ public class RollModule : InteractionModuleBase<SocketInteractionContext>
 	public async Task Current([Summary(description: "Alias du personnage.")] string? alias = null)
 	{
 		var player = await _dbContext.Players.FindAsync(Context.User.Id);
-		if (player != null || player.LastUsed != null || alias != null)
+		if (player is {LastUsed: { }})
 		{
 			if (alias != null)
 			{
