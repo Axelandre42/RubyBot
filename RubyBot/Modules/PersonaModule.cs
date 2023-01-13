@@ -15,7 +15,6 @@ public class PersonaModule : InteractionModuleBase<SocketInteractionContext>
 	public PersonaModule(RolePlayContext dbContext)
 	{
 		_dbContext = dbContext;
-		_dbContext.Database.EnsureCreated();
 	}
 
 	private static Embed CreatePersonaEmbed(Persona persona)

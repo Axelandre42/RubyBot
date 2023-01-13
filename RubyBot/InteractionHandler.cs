@@ -4,6 +4,8 @@ using Discord.Addons.Hosting;
 using Discord.Addons.Hosting.Util;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
+using RubyBot.Model;
 
 namespace RubyBot;
 
@@ -11,15 +13,13 @@ public class InteractionHandler : DiscordClientService
 {
 	private readonly IServiceScopeFactory _scopeFactory;
 	private readonly InteractionService _interactionService;
-	private readonly IHostEnvironment _environment;
-	private readonly IConfiguration _configuration;
+	private readonly RolePlayContext _dbContext;
 	
-	public InteractionHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceScopeFactory scopeFactory, InteractionService interactionService, IHostEnvironment environment, IConfiguration configuration) : base(client, logger)
+	public InteractionHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceScopeFactory scopeFactory, InteractionService interactionService, RolePlayContext dbContext) : base(client, logger)
 	{
 		_scopeFactory = scopeFactory;
 		_interactionService = interactionService;
-		_environment = environment;
-		_configuration = configuration;
+		_dbContext = dbContext;
 	}
 
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,7 +28,8 @@ public class InteractionHandler : DiscordClientService
 		
 		await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _scopeFactory.CreateScope().ServiceProvider);
 		await Client.WaitForReadyAsync(stoppingToken);
-		
+
+		await _dbContext.Database.MigrateAsync(cancellationToken: stoppingToken);
 		await _interactionService.RegisterCommandsGloballyAsync();
 
 	}

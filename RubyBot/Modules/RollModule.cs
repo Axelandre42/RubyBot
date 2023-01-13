@@ -14,7 +14,6 @@ public class RollModule : InteractionModuleBase<SocketInteractionContext>
 	public RollModule(RolePlayContext dbContext)
 	{
 		_dbContext = dbContext;
-		_dbContext.Database.EnsureCreated();
 	}
 
 	private static int Random(Player player, int min, int max)
