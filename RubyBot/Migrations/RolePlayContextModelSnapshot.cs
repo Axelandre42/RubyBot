@@ -21,6 +21,20 @@ namespace RubyBot.Migrations
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true);
 
+            modelBuilder.Entity("RubyBot.Model.Hotel", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("Size")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Hotels");
+                });
+
             modelBuilder.Entity("RubyBot.Model.Persona", b =>
                 {
                     b.Property<int>("Id")
@@ -83,6 +97,28 @@ namespace RubyBot.Migrations
                     b.ToTable("Players");
                 });
 
+            modelBuilder.Entity("RubyBot.Model.Room", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Busy")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("HotelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("Number")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("Rooms");
+                });
+
             modelBuilder.Entity("RubyBot.Model.Persona", b =>
                 {
                     b.HasOne("RubyBot.Model.Player", "Player")
@@ -101,6 +137,22 @@ namespace RubyBot.Migrations
                         .HasForeignKey("RubyBot.Model.Player", "LastUsedId");
 
                     b.Navigation("LastUsed");
+                });
+
+            modelBuilder.Entity("RubyBot.Model.Room", b =>
+                {
+                    b.HasOne("RubyBot.Model.Hotel", "Hotel")
+                        .WithMany("Rooms")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("RubyBot.Model.Hotel", b =>
+                {
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("RubyBot.Model.Player", b =>

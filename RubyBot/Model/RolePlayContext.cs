@@ -6,6 +6,8 @@ public class RolePlayContext : DbContext
 {
 	public DbSet<Player> Players { get; set; } = null!;
 	public DbSet<Persona> Personas { get; set; } = null!;
+	public DbSet<Hotel> Hotels { get; set; } = null!;
+	public DbSet<Room> Rooms { get; set; } = null!;
 
 	public RolePlayContext(DbContextOptions options) : base(options)
 	{
