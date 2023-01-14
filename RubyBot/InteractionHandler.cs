@@ -13,25 +13,29 @@ public class InteractionHandler : DiscordClientService
 {
 	private readonly IServiceScopeFactory _scopeFactory;
 	private readonly InteractionService _interactionService;
-	private readonly RolePlayContext _dbContext;
 	
-	public InteractionHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceScopeFactory scopeFactory, InteractionService interactionService, RolePlayContext dbContext) : base(client, logger)
+	public InteractionHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceScopeFactory scopeFactory, InteractionService interactionService) : base(client, logger)
 	{
 		_scopeFactory = scopeFactory;
 		_interactionService = interactionService;
-		_dbContext = dbContext;
 	}
 
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
+		var serviceProvider = _scopeFactory.CreateScope().ServiceProvider;
+		var dbContext = serviceProvider.GetService<RolePlayContext>();
+		
 		Client.InteractionCreated += HandleInteraction;
 		
-		await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _scopeFactory.CreateScope().ServiceProvider);
+		await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), serviceProvider);
 		await Client.WaitForReadyAsync(stoppingToken);
-
-		await _dbContext.Database.MigrateAsync(cancellationToken: stoppingToken);
+		
+		if (dbContext != null)
+		{
+			await dbContext.Database.MigrateAsync(cancellationToken: stoppingToken);
+		}
+		
 		await _interactionService.RegisterCommandsGloballyAsync();
-
 	}
 
 	private async Task HandleInteraction(SocketInteraction arg)
