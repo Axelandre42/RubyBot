@@ -10,7 +10,6 @@ namespace RubyBot.Modules;
 public class PersonaModule : InteractionModuleBase<SocketInteractionContext>
 {
 	private readonly RolePlayContext _dbContext;
-	public static readonly Random Random = new();
 
 	public PersonaModule(RolePlayContext dbContext)
 	{
@@ -71,7 +70,7 @@ public class PersonaModule : InteractionModuleBase<SocketInteractionContext>
 			player = new Player
 			{
 				Id = Context.User.Id,
-				Seed = Random.Next()
+				Seed = Util.Random.Next()
 			};
 			
 			await _dbContext.AddAsync(player);

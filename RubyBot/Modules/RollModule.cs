@@ -140,7 +140,7 @@ public class RollModule : InteractionModuleBase<SocketInteractionContext>
 			player = new Player
 			{
 				Id = Context.User.Id,
-				Seed = PersonaModule.Random.Next()
+				Seed = Util.Random.Next()
 			};
 			
 			await _dbContext.AddAsync(player);
@@ -167,7 +167,7 @@ public class RollModule : InteractionModuleBase<SocketInteractionContext>
 			player = new Player
 			{
 				Id = Context.User.Id,
-				Seed = PersonaModule.Random.Next()
+				Seed = Util.Random.Next()
 			};
 			
 			await _dbContext.AddAsync(player);
@@ -194,7 +194,7 @@ public class RollModule : InteractionModuleBase<SocketInteractionContext>
 			player = new Player
 			{
 				Id = Context.User.Id,
-				Seed = PersonaModule.Random.Next()
+				Seed = Util.Random.Next()
 			};
 			
 			await _dbContext.AddAsync(player);
