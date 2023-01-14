@@ -6,6 +6,5 @@ public class Player
 	public int Seed { get; set; }
 	
 	public virtual Persona? LastUsed { get; set; }
-
-	public virtual List<Persona> Personas { get; set; }
+	public virtual List<Persona> Personas { get; set; } = null!;
 }
