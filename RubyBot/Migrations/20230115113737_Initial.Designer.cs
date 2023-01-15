@@ -11,7 +11,7 @@ using RubyBot.Model;
 namespace RubyBot.Migrations
 {
     [DbContext(typeof(RolePlayContext))]
-    [Migration("20230113142844_Initial")]
+    [Migration("20230115113737_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -19,45 +19,60 @@ namespace RubyBot.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true);
+                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("RubyBot.Model.Hotel", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<byte>("Size")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Hotels");
+                });
 
             modelBuilder.Entity("RubyBot.Model.Persona", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<byte>("Agility")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint unsigned");
 
                     b.Property<string>("Alias")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("Locked")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<byte>("Parade")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint unsigned");
 
                     b.Property<ulong>("PlayerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<byte>("Precision")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint unsigned");
 
                     b.Property<byte>("Resistance")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint unsigned");
 
                     b.Property<byte>("Strength")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint unsigned");
 
                     b.HasKey("Id");
 
@@ -70,13 +85,13 @@ namespace RubyBot.Migrations
                 {
                     b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<int?>("LastUsedId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("Seed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -84,6 +99,28 @@ namespace RubyBot.Migrations
                         .IsUnique();
 
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("RubyBot.Model.Room", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<bool>("Busy")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<ulong>("HotelId")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<byte>("Number")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("RubyBot.Model.Persona", b =>
@@ -104,6 +141,22 @@ namespace RubyBot.Migrations
                         .HasForeignKey("RubyBot.Model.Player", "LastUsedId");
 
                     b.Navigation("LastUsed");
+                });
+
+            modelBuilder.Entity("RubyBot.Model.Room", b =>
+                {
+                    b.HasOne("RubyBot.Model.Hotel", "Hotel")
+                        .WithMany("Rooms")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("RubyBot.Model.Hotel", b =>
+                {
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("RubyBot.Model.Player", b =>

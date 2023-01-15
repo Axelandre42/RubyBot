@@ -19,7 +19,7 @@ var host = Host.CreateDefaultBuilder(args)
 			                 - GatewayIntents.GuildInvites
 		};
 
-		config.Token = context.Configuration["token"] ?? string.Empty;
+		config.Token = context.Configuration["Token"] ?? string.Empty;
 	})
 	.UseInteractionService((context, config) =>
 	{
@@ -28,10 +28,14 @@ var host = Host.CreateDefaultBuilder(args)
 	})
 	.ConfigureServices((context, services) =>
 	{
-		var dbPath = Path.Join(Environment.CurrentDirectory, "ruby_bot.db");
+		var databaseConfig = context.Configuration.GetSection("Database");
+		
+		var connectionString = databaseConfig["ConnectionString"] ?? string.Empty;
+		var serverVersion = ServerVersion.Parse(databaseConfig["ServerVersion"] ?? string.Empty);
+		
 		services.AddDbContext<RolePlayContext>(b => b
 			.UseLazyLoadingProxies()
-			.UseSqlite($"Data Source={dbPath}"));
+			.UseMySql(connectionString, serverVersion));
 		services.AddHostedService<InteractionHandler>();
 	})
 	.Build();
